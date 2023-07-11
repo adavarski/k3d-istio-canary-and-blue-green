@@ -8,6 +8,7 @@ k3d cluster create istio  --k3s-arg "--disable=traefik@server:0" \
        --api-port 6443 \
        --wait
 
+Note: Using k3s (not tested)
 $ /usr/bin/ssh root@192.168.1.99  'bash -s' < install-k3s.sh > ~/.kube/config-k3s.yaml```
 ```
 ### Install Istio
