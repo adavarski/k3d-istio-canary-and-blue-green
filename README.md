@@ -13,7 +13,7 @@ As you prepare a new version of your software, deployment and the final stage of
 ### WHAT IS CANARY DEPLOYMENT THEN?
 Canary deployments are a pattern for rolling out releases to a subset of users or servers. The idea is to first deploy the change to a small subset of servers, test it, and then roll the change out to the rest of the servers. The canary deployment serves as an early warning indicator with less impact on downtime: if the canary deployment fails, the rest of the servers aren't impacted.
 
-<img src="screenshots/k8s-istio-blue-canary.png?raw=true" width="1000">
+<img src="screenshots/k8s-istio-canary.png?raw=true" width="1000">
 
 
 ### Create k3s cluster 
