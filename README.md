@@ -93,12 +93,12 @@ Jaeger (Tracing):
 
 Pre: Create docker images
 ```
-$ cd demoapp
-$ docker build -t davarski/testing-app:v1 .
+cd demoapp
+docker build -t davarski/testing-app:v1 .
 Change index.html: v1 -> v2
-$ docker build -t davarski/testing-app:v2 .
-$ docker push davarski/testing-app:v1
-$ docker push davarski/testing-app:v2
+docker build -t davarski/testing-app:v2 .
+docker push davarski/testing-app:v1
+docker push davarski/testing-app:v2
 ```
 
 Create canary and blue/green deployment of a demo application with Istio and Helm on k3d
@@ -111,14 +111,14 @@ Create canary and blue/green deployment of a demo application with Istio and Hel
 
 **Installation**
 ```shell
-$ kubectl create namespace prod
-$ kubectl create namespace stage
-$ kubectl label namespace prod istio-injection=enabled
-$ kubectl label namespace stage istio-injection=enabled
-$ helm install demoappv1 helm-chart/demoapp/ --wait --set deployment.tag=v1 --namespace prod
-$ helm install demoappv2 helm-chart/demoapp/ --wait --set deployment.tag=v2 --namespace stage
-$ kubectl create -f istio-config/gateway.yaml
-$ kubectl create -f istio-config/vsvc.yaml
+kubectl create namespace prod
+kubectl create namespace stage
+kubectl label namespace prod istio-injection=enabled
+kubectl label namespace stage istio-injection=enabled
+helm install demoappv1 helm-chart/demoapp/ --wait --set deployment.tag=v1 --namespace prod
+helm install demoappv2 helm-chart/demoapp/ --wait --set deployment.tag=v2 --namespace stage
+kubectl create -f istio-config/gateway.yaml
+kubectl create -f istio-config/vsvc.yaml
 ```
 
 If everything went good, you should be able to see in your kiali versioned graph the following:
