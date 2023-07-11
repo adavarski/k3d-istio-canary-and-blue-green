@@ -144,7 +144,7 @@ docker build -t davarski/testing-app:v2 .
 docker push davarski/testing-app:v1
 docker push davarski/testing-app:v2
 ```
-I have created two versions of the application that was built in Docker images. We need to create two namespaces (prod and stage) in which we will put the different versions of our application - let us create them:
+I have created two versions of the application that was built in Docker images. 
 
 
 Create canary and blue/green deployment of a demo application with Istio and Helm on k3d:
@@ -156,22 +156,25 @@ Create canary and blue/green deployment of a demo application with Istio and Hel
 
 
 **Installation**
+
+#### We need to create two namespaces (prod and stage) in which we will put the different versions of our application - let us create them:
+
 ```shell
 kubectl create namespace prod
 kubectl create namespace stage
-
-### Then we need to tell Istio to monitor these namespaces by labeling them so it can keep track of the resources inside them:
-
+```
+#### Then we need to tell Istio to monitor these namespaces by labeling them so it can keep track of the resources inside them:
+```
 kubectl label namespace prod istio-injection=enabled
 kubectl label namespace stage istio-injection=enabled
-
-### Now we can deploy the two versions of our application in each individual namespace by:
-
+```
+#### Now we can deploy the two versions of our application in each individual namespace by:
+```
 helm install demoappv1 helm-chart/demoapp/ --wait --set deployment.tag=v1 --namespace prod
 helm install demoappv2 helm-chart/demoapp/ --wait --set deployment.tag=v2 --namespace stage
-
-### Once deployed, we have to install the two Istio files in the istio-config directory that will basically do the magic:
-
+```
+#### Once deployed, we have to install the two Istio files in the istio-config directory that will basically do the magic:
+```
 kubectl create -f istio-config/gateway.yaml
 kubectl create -f istio-config/vsvc.yaml
 ```
@@ -206,8 +209,6 @@ If everything went good, you should be able to see in your kiali versioned graph
 <img src="screenshots/screenshot.png?raw=true" width="900">
 
 With Istio, we can do a lot of advanced configuration such as SSL mutual authentication between microservices and apply advanced routing policies with the help of DestinationRule.
-
-
 
 ```
 kubectl get svc istio-ingressgateway -n istio-system
