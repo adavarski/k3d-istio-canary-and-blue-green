@@ -1,14 +1,15 @@
 ## k3d istio Canary and Blue/Green deployments (POC)
 
-### Create k3d cluster 
+### Create k3s cluster 
 ```
 k3d cluster create istio  --k3s-arg "--disable=traefik@server:0" \
        --port 9443:443@loadbalancer \
        --port 8080:80@loadbalancer \
        --api-port 6443 \
-       --wait 
-```
+       --wait
 
+$ /usr/bin/ssh root@192.168.1.99  'bash -s' < install-k3s.sh > ~/.kube/config-k3s.yaml```
+```
 ### Install Istio
 ```
 $ ISTIO_VERSION=1.18.0
