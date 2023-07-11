@@ -1,10 +1,8 @@
-## istio-k3d (POC)
-
-This POC performs a istio installation in a k3d cluster.
+## k3d istio Canary and Blue/Green deployments (POC)
 
 ### Create k3d cluster 
 ```
-     k3d cluster create istio  --k3s-arg "--disable=traefik@server:0" \
+k3d cluster create istio  --k3s-arg "--disable=traefik@server:0" \
        --port 9443:443@loadbalancer \
        --port 8080:80@loadbalancer \
        --api-port 6443 \
@@ -15,29 +13,11 @@ This POC performs a istio installation in a k3d cluster.
 ```
 $ ISTIO_VERSION=1.18.0
 $ curl -L https://istio.io/downloadIstio | ISTIO_VERSION=${ISTIO_VERSION} TARGET_ARCH=x86_64 sh
-Downloading istio-1.18.0 from https://github.com/istio/istio/releases/download/1.18.0/istio-1.18.0-linux-amd64.tar.gz ...
-
-Istio 1.18.0 Download Complete!
-
-Istio has been successfully downloaded into the istio-1.18.0 folder on your system.
-
-Next Steps:
-See https://istio.io/latest/docs/setup/install/ to add Istio to your Kubernetes cluster.
-
-To configure the istioctl client tool for your workstation,
-add the /home/davar/ISTIO/k3d-istio/k3d-istio-canary-and-blue-green/istio-1.18.0/bin directory to your environment path variable with:
-	 export PATH="$PATH:/home/davar/ISTIO/k3d-istio/k3d-istio-canary-and-blue-green/istio-1.18.0/bin"
-
-Begin the Istio pre-installation check by running:
-	 istioctl x precheck 
-
-Need more information? Visit https://istio.io/latest/docs/setup/install/ 
-
 $ ./istio-${ISTIO_VERSION}/bin/istioctl install  --set profile=default --skip-confirmation
-✔ Istio core installed                                                                                                                                                                                                                                                                                                        
-✔ Istiod installed                                                                                                                                                                                                                                                                                                            
-✔ Ingress gateways installed                                                                                                                                                                                                                                                                                                  
-✔ Installation complete                                                                                                                                                                                                                                                                                                       Making this installation the default for injection and validation.
+✔ Istio core installed
+✔ Istiod installed
+✔ Ingress gateways installed
+✔ Installation complete                                                                                                                                                                                                                                                                     Making this installation the default for injection and validation.
 
 $ ./istio-${ISTIO_VERSION}/bin/istioctl analyze
 
@@ -49,10 +29,9 @@ kubectl apply -f ./istio-${ISTIO_VERSION}/samples/addons/grafana.yaml
 kubectl apply -f ./ingresses/  -n istio-system
 ```
 
-### Check: 
+### Check istio installation: 
 
 ```
-
 $ kubectl get po -n istio-system
 NAME                                    READY   STATUS    RESTARTS   AGE
 istiod-786fddf775-x5vdk                 1/1     Running   0          32m
@@ -61,7 +40,6 @@ jaeger-cc4688b98-42rnp                  1/1     Running   0          8m26s
 prometheus-67f6764db9-5x8mz             2/2     Running   0          8m24s
 kiali-75b4b9df64-fxsb4                  1/1     Running   0          8m26s
 grafana-6cb5b7fbb8-fh2lm                1/1     Running   0          7m19s
-
 
 $ kubectl get svc -n istio-system
 NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                                      AGE
@@ -74,14 +52,12 @@ jaeger-collector       ClusterIP      10.43.159.96    <none>        14268/TCP,14
 prometheus             ClusterIP      10.43.115.20    <none>        9090/TCP                                     9m
 grafana                ClusterIP      10.43.162.18    <none>        3000/TCP                                     7m54s
 
-
 $ kubectl get ing -n istio-system
 NAME      CLASS    HOSTS                         ADDRESS      PORTS   AGE
 grafana   <none>   grafana.192.168.1.99.nip.io   172.24.0.2   80      24m
 kiali     <none>   kiali.192.168.1.99.nip.io     172.24.0.2   80      24m
 prom      <none>   prom.192.168.1.99.nip.io      172.24.0.2   80      24m
 tracing   <none>   tracing.192.168.1.99.nip.io   172.24.0.2   80      24m
-
 ```
 
 ### Browser:
@@ -90,7 +66,6 @@ tracing   <none>   tracing.192.168.1.99.nip.io   172.24.0.2   80      24m
 - Prometheus: http://prom.192.168.1.99.nip.io:8080
 - Grafana: http://grafana.192.168.1.99.nip.io:8080
 - Jaeger: http://tracing.192.168.1.99.nip.io:8080
-
 
 ### Screenshots:
 
@@ -115,9 +90,19 @@ Jaeger (Tracing):
 ```
 ## istio-helm-deployment
 
-create canary and blue/green deployment of a demo application with Istio and Helm on k3d
+Pre: Create docker images
+```
+$ cd demoapp
+$ docker build -t davarski/testing-app:v1 .
+Change index.html: v1 -> v2
+$ docker build -t davarski/testing-app:v2 .
+$ docker push davarski/testing-app:v1
+$ docker push davarski/testing-app:v2
+```
 
-**This code contains the following resources**
+Create canary and blue/green deployment of a demo application with Istio and Helm on k3d
+
+**We will use the following resources**
 
 - demo application helm chart
 - basic istio configuration
@@ -134,7 +119,6 @@ $ helm install demoappv2 helm-chart/demoapp/ --wait --set deployment.tag=v2 --na
 $ kubectl create -f istio-config/gateway.yaml
 $ kubectl create -f istio-config/vsvc.yaml
 ```
-
 
 If everything went good, you should be able to see in your kiali versioned graph the following:
 ![Screenshot](screenshot.png)
