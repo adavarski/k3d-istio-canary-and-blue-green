@@ -8,7 +8,7 @@ k3d cluster create istio  --k3s-arg "--disable=traefik@server:0" \
        --api-port 6443 \
        --wait
 
-Note: Using k3s (not tested)
+Note: We can use k3s also (not tested)
 
 ```
 ### Install Istio
