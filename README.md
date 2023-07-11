@@ -1,5 +1,7 @@
 ## k3d istio Canary and Blue/Green deployments (POC)
 
+In this playground, we are going to review ways in which we can deploy two versions of our application in production-like environments in Kubernetes and apply two different availability approaches. The first is to distribute network traffic evenly between the two versions (canary) and the second is for 100% of the traffic to either one of them (blue/green) with zero downtime.
+
 ### Create k3s cluster 
 ```
 k3d cluster create istio  --k3s-arg "--disable=traefik@server:0" \
