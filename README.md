@@ -133,8 +133,10 @@ echo "$GATEWAY_URL"
 curl -v $GATEWAY_URL (10 times for example)
 ```
 
+<img src="screenshots/istio-kiali-helm.png?raw=true" width="900">
 
 <img src="screenshots/screenshot.png?raw=true" width="900">
+
 
 ---
 
