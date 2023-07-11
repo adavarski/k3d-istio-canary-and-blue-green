@@ -125,6 +125,15 @@ If everything went good, you should be able to see in your kiali versioned graph
 
 <img src="screenshots/istio-demoapp.png?raw=true" width="1000">
 
+```
+kubectl get svc istio-ingressgateway -n istio-system
+export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}')
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+echo "$GATEWAY_URL"
+curl -v $GATEWAY_URL
+```
+
 
 <img src="screenshots/screenshot.png?raw=true" width="900">
 
