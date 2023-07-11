@@ -252,19 +252,18 @@ If everything went good, you should be able to see in your kiali versioned graph
 
 With Istio, we can do a lot of advanced configuration such as SSL mutual authentication between microservices and apply advanced routing policies with the help of DestinationRule.
 
+### TODO: FIX 
 ```
 kubectl get svc istio-ingressgateway -n istio-system
 export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}')
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 echo "$GATEWAY_URL"
-curl -v $GATEWAY_URL (10 times for example)
+curl -v $GATEWAY_URL (20 times for example)
 ```
-
 <img src="screenshots/istio-kiali-helm.png?raw=true" width="900">
 
 ---
-
 
 ### CONCLUSION
 In this playground, we discovered together how can we apply a hybrid solution between Canary and Blue/Green deployment with the help of Helm and Istio. 
