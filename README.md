@@ -241,7 +241,7 @@ Gateway file applies a listening policy to the istio ingress-controller whereas 
 The next step will be to get the DNS name of the load-balancer created by Istio:
 
 ```
-kubectl get svc -n istio-system | grep -i LoadBalancer | awk '{print $4}'[/php]
+kubectl get svc -n istio-system | grep -i LoadBalancer | awk '{print $4}'
 ```
 
 Then open your browser and copy-paste the DNS name of the LB you are going to see the current version set up by the VirtualService weight distribution:
