@@ -13,15 +13,15 @@ $ /usr/bin/ssh root@192.168.1.99  'bash -s' < install-k3s.sh > ~/.kube/config-k3
 ```
 ### Install Istio
 ```
-$ ISTIO_VERSION=1.18.0
-$ curl -L https://istio.io/downloadIstio | ISTIO_VERSION=${ISTIO_VERSION} TARGET_ARCH=x86_64 sh
-$ ./istio-${ISTIO_VERSION}/bin/istioctl install  --set profile=default --skip-confirmation
+ISTIO_VERSION=1.18.0
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=${ISTIO_VERSION} TARGET_ARCH=x86_64 sh
+./istio-${ISTIO_VERSION}/bin/istioctl install  --set profile=default --skip-confirmation
 ✔ Istio core installed
 ✔ Istiod installed
 ✔ Ingress gateways installed
 ✔ Installation complete                                                                                                                                                                                                                                                                     Making this installation the default for injection and validation.
 
-$ ./istio-${ISTIO_VERSION}/bin/istioctl analyze
+./istio-${ISTIO_VERSION}/bin/istioctl analyze
 
 kubectl apply -f ./istio-${ISTIO_VERSION}/samples/addons/kiali.yaml
 kubectl apply -f ./istio-${ISTIO_VERSION}/samples/addons/jaeger.yaml
