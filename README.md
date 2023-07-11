@@ -35,7 +35,7 @@ Istio provides behavioral insights and operational control over the service mesh
 
 Now let us dive into the solution:
 
-If you want to follow along with this article, you will need to install all necessary resources:
+If you want to follow along with this playground, you will need to install all necessary resources:
 
 - k3d cluster
 - kubectl
