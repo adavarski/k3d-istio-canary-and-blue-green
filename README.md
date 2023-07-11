@@ -120,7 +120,7 @@ $ kubectl create -f istio-config/vsvc.yaml
 ```
 
 If everything went good, you should be able to see in your kiali versioned graph the following:
-![Screenshot](screenshot.png)
+<img src="screenshots/screenshot.png?raw=true" width="1000">
 
 ---
 
