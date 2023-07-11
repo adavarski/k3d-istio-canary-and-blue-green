@@ -2,6 +2,20 @@
 
 In this playground, we are going to review ways in which we can deploy two versions of our application in production-like environments in Kubernetes and apply two different availability approaches. The first is to distribute network traffic evenly between the two versions (canary) and the second is for 100% of the traffic to either one of them (blue/green) with zero downtime.
 
+### WHAT IS BLUE/GREEN DEPLOYMENT?
+Blue-green deployment is a technique that reduces downtime and risk by running two identical production environments called Blue and Green.
+
+At any time, only one of the environments is live, with the live environment serving all production traffic. For this example, Blue is currently live and Green is idle.
+As you prepare a new version of your software, deployment and the final stage of testing takes place in the environment that is not live: in this example, Green. Once you have deployed and fully tested the software in Green, you switch the router so all incoming requests now go to Green instead of Blue. Green is now live, and Blue is idle.
+
+<img src="screenshots/k8s-istio-blue-green.png?raw=true" width="1000">
+
+### WHAT IS CANARY DEPLOYMENT THEN?
+Canary deployments are a pattern for rolling out releases to a subset of users or servers. The idea is to first deploy the change to a small subset of servers, test it, and then roll the change out to the rest of the servers. The canary deployment serves as an early warning indicator with less impact on downtime: if the canary deployment fails, the rest of the servers aren't impacted.
+
+<img src="screenshots/k8s-istio-blue-canary.png?raw=true" width="1000">
+
+
 ### Create k3s cluster 
 ```
 k3d cluster create istio  --k3s-arg "--disable=traefik@server:0" \
