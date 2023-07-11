@@ -15,6 +15,35 @@ Canary deployments are a pattern for rolling out releases to a subset of users o
 
 <img src="screenshots/k8s-istio-canary.png?raw=true" width="1000">
 
+### WHAT IS HELM ALL ABOUT?
+Helm is the first application package manager running on top of Kubernetes. It allows you to describe the application structure through convenient helm-charts and to manage it with simple commands.
+
+Why is Helm important? Because it’s a huge shift in the way the server-side applications are defined, stored, and managed. Adoption of Helm might well be the key to the mass adoption of microservices, as using this package manager simplifies their management greatly.
+
+Why are microservices so important? They have quite a few uses:
+
+When there are several microservices instead of a monolithic application, each microservice can be managed, updated and scaled individually
+Issues with one microservice do not affect the functionality of other components of the application
+The new application can be easily composed of existing loosely-coupled microservices
+
+### WHAT IS ISTIO?
+Istio addresses the challenges developers and operators face as monolithic applications transition towards a distributed microservice architecture. To see how it helps to take a more detailed look at Istio’s service mesh.
+
+The term service mesh is used to describe the network of microservices that make up such applications and the interactions between them. As a service mesh grows in size and complexity, it can become harder to understand and manage. Its requirements can include discovery, load balancing, failure recovery, metrics, and monitoring. A service mesh also often has more complex operational requirements, like A/B testing, canary rollouts, rate limiting, access control, and end-to-end authentication.
+
+Istio provides behavioral insights and operational control over the service mesh as a whole, offering a complete solution to satisfy the diverse requirements of microservice applications.
+
+Now let us dive into the solution:
+
+If you want to follow along with this article, you will need to install all necessary resources:
+
+- k3d cluster
+- kubectl
+- istio
+- istioctl
+- helm3
+
+As you can see from the repository, I have wrapped my application into a Helm chart so that it can be installed as a package. Thanks to Helm I am able to dynamically install different versions of the application on runtime.
 
 ### Create k3s cluster 
 ```
@@ -115,8 +144,10 @@ docker build -t davarski/testing-app:v2 .
 docker push davarski/testing-app:v1
 docker push davarski/testing-app:v2
 ```
+I have created two versions of the application that was built in Docker images. We need to create two namespaces (prod and stage) in which we will put the different versions of our application - let us create them:
 
-Create canary and blue/green deployment of a demo application with Istio and Helm on k3d
+
+Create canary and blue/green deployment of a demo application with Istio and Helm on k3d:
 
 **We will use the following resources**
 
@@ -128,17 +159,55 @@ Create canary and blue/green deployment of a demo application with Istio and Hel
 ```shell
 kubectl create namespace prod
 kubectl create namespace stage
+
+### Then we need to tell Istio to monitor these namespaces by labeling them so it can keep track of the resources inside them:
+
 kubectl label namespace prod istio-injection=enabled
 kubectl label namespace stage istio-injection=enabled
+
+### Now we can deploy the two versions of our application in each individual namespace by:
+
 helm install demoappv1 helm-chart/demoapp/ --wait --set deployment.tag=v1 --namespace prod
 helm install demoappv2 helm-chart/demoapp/ --wait --set deployment.tag=v2 --namespace stage
+
+### Once deployed, we have to install the two Istio files in the istio-config directory that will basically do the magic:
+
 kubectl create -f istio-config/gateway.yaml
 kubectl create -f istio-config/vsvc.yaml
 ```
 
+Both of these files and almost everything in Istio are built and run thanks to the Kubernetes Custom Resources Definitions.
+
+Custom Resources Definition (CRD) is a powerful feature introduced in Kubernetes which enables users to add their own customized objects to the Kubernetes cluster and use it like any other native Kubernetes objects. So what is the Gateway project then? Let us look below at the official Istio explanation.
+
+"Gateway describes a load balancer operating at the edge of the mesh receiving incoming or outgoing HTTP/TCP connections. The specification describes a set of ports that should be exposed, the type of protocol to use, SNI configuration for the load balancer, etc."
+
+### WHAT IS VIRTUALSERVICE?
+Let us look again into the official documentation:
+
+"A VirtualService defines a set of traffic routing rules to apply when a host is addressed. Each routing rule defines matching criteria for the traffic of a specific protocol. If the traffic is matched, then it is sent to a named destination service (or subset/version of it) defined in the registry."
+
+So basically Gateway describes the listening policy of the Istio’s ingress controller and VirtualService will “glue” this Gateway service to the services of the actual pods running in the cluster.
+
+With VirtualService we actually tell Istio how to distribute the traffic to our services. Weight in this case refers to the traffic percentage on the said environment. It is very important that we have a formal means of redistributing traffic between the two environments (prod & stage) with different versions of the code. The goal is to have the new version of the application fully tested in the staging environment and then migrating it to production, with 100% traffic (while keeping the old code for roll-back purposes). Production migration has to happen gradually. The staging environment needs to mandatorily be tested at 0% traffic to ensure it is ready for the gradual increase of traffic. Once these tests are successful, staging is ready for a 30% traffic redistribution, leaving production with 70% of the traffic.
+
+The traffic increase on staging needs to happen gradually until it reaches 100% and tests have to be performed at every stage. Once the entire traffic has been migrated, we will have a staging environment at 100% traffic and a production environment at 0%. The next step will be to manually update the production environment with the latest version (that is on staging) and then switch the whole traffic (100%) back to production, once we are ready.
+
+The next step will be to get the DNS name of the load-balancer created by Istio:
+
+```
+kubectl get svc -n istio-system | grep -i LoadBalancer | awk '{print $4}'[/php]
+```
+
+Then open your browser and copy-paste the DNS name of the LB you are going to see the current version set up by the VirtualService weight distribution:
+
 If everything went good, you should be able to see in your kiali versioned graph the following:
 
-<img src="screenshots/istio-demoapp.png?raw=true" width="1000">
+<img src="screenshots/screenshot.png?raw=true" width="900">
+
+With Istio, we can do a lot of advanced configuration such as SSL mutual authentication between microservices and apply advanced routing policies with the help of DestinationRule.
+
+
 
 ```
 kubectl get svc istio-ingressgateway -n istio-system
@@ -151,12 +220,9 @@ curl -v $GATEWAY_URL (10 times for example)
 
 <img src="screenshots/istio-kiali-helm.png?raw=true" width="900">
 
-<img src="screenshots/screenshot.png?raw=true" width="900">
-
-
 ---
 
-## How it works 
+### How it works 
 
 The magic happens in the next two files that we applied earlier
 
@@ -197,4 +263,16 @@ spec:
  ```
 
 Gateway file applies a listening policy to the istio ingress-controller whereas virtualservice maps that gateway with the services we would like to destribute the traffic to.
+
+### CONCLUSION
+In this playground, we discovered together how can we apply a hybrid solution between Canary and Blue/Green deployment with the help of Helm and Istio. 
+
+Here are some sources for further reading:
+
+Kubernetes Fundamentals on Strive 2 Code
+Canary Deployments on Octopus Deploy
+Istio Docs
+Blue/Green Deployments on O'Reilly
+Using Canary Release Pipelines to Achieve Continuous Testing on Sauce Labs
+
 
