@@ -196,33 +196,6 @@ With VirtualService we actually tell Istio how to distribute the traffic to our 
 
 The traffic increase on staging needs to happen gradually until it reaches 100% and tests have to be performed at every stage. Once the entire traffic has been migrated, we will have a staging environment at 100% traffic and a production environment at 0%. The next step will be to manually update the production environment with the latest version (that is on staging) and then switch the whole traffic (100%) back to production, once we are ready.
 
-The next step will be to get the DNS name of the load-balancer created by Istio:
-
-```
-kubectl get svc -n istio-system | grep -i LoadBalancer | awk '{print $4}'[/php]
-```
-
-Then open your browser and copy-paste the DNS name of the LB you are going to see the current version set up by the VirtualService weight distribution:
-
-If everything went good, you should be able to see in your kiali versioned graph the following:
-
-<img src="screenshots/screenshot.png?raw=true" width="900">
-
-With Istio, we can do a lot of advanced configuration such as SSL mutual authentication between microservices and apply advanced routing policies with the help of DestinationRule.
-
-```
-kubectl get svc istio-ingressgateway -n istio-system
-export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}')
-export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
-export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
-echo "$GATEWAY_URL"
-curl -v $GATEWAY_URL (10 times for example)
-```
-
-<img src="screenshots/istio-kiali-helm.png?raw=true" width="900">
-
----
-
 ### How it works 
 
 The magic happens in the next two files that we applied earlier
@@ -264,6 +237,34 @@ spec:
  ```
 
 Gateway file applies a listening policy to the istio ingress-controller whereas virtualservice maps that gateway with the services we would like to destribute the traffic to.
+
+The next step will be to get the DNS name of the load-balancer created by Istio:
+
+```
+kubectl get svc -n istio-system | grep -i LoadBalancer | awk '{print $4}'[/php]
+```
+
+Then open your browser and copy-paste the DNS name of the LB you are going to see the current version set up by the VirtualService weight distribution:
+
+If everything went good, you should be able to see in your kiali versioned graph the following:
+
+<img src="screenshots/screenshot.png?raw=true" width="900">
+
+With Istio, we can do a lot of advanced configuration such as SSL mutual authentication between microservices and apply advanced routing policies with the help of DestinationRule.
+
+```
+kubectl get svc istio-ingressgateway -n istio-system
+export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}')
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+echo "$GATEWAY_URL"
+curl -v $GATEWAY_URL (10 times for example)
+```
+
+<img src="screenshots/istio-kiali-helm.png?raw=true" width="900">
+
+---
+
 
 ### CONCLUSION
 In this playground, we discovered together how can we apply a hybrid solution between Canary and Blue/Green deployment with the help of Helm and Istio. 
