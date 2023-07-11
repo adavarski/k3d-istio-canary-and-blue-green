@@ -71,9 +71,8 @@ tracing   <none>   tracing.192.168.1.99.nip.io   172.24.0.2   80      24m
 
 ### Screenshots:
 
-Kiali:
+Kiali (istio-system namespace)
 
-istio-system: 
 <img src="screenshots/istio-kiali-istio-system-namespace.png?raw=true" width="1000">
 
 Prometheus:
