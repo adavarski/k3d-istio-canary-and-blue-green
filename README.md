@@ -87,8 +87,7 @@ Jaeger (Tracing):
 <img src="screenshots/k3d-istio-jaeger.png?raw=true" width="1000">
 
 
-```
-## istio-helm-deployment
+###  istio-helm-deployment
 
 Pre: Create docker images
 ```
@@ -164,6 +163,6 @@ spec:
           host: flaskapp.stage.svc.cluster.local
         weight: 50
  ```
----
+
 Gateway file applies a listening policy to the istio ingress-controller whereas virtualservice maps that gateway with the services we would like to destribute the traffic to.
 
