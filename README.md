@@ -131,7 +131,7 @@ export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o 
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 echo "$GATEWAY_URL"
-curl -v $GATEWAY_URL
+curl -v $GATEWAY_URL (10 times for example)
 ```
 
 
