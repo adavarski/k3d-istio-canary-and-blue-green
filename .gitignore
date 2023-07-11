@@ -1,0 +1,6 @@
+kubeconfig
+kubeconfig.*
+kubectl
+k3d
+events.txt
+istio-*
