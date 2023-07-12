@@ -271,6 +271,7 @@ $ curl 192.168.1.99:8080
 demoapp v1!
 $ curl 192.168.1.99:8080
 
+Note: upstream connect error or disconnect/reset before headers. reset reason: connection failure, transport failure reason: delayed connect error: 111 ---> switch pod listen address from 172.0.0.1 to 0.0.0.0
 ```
 
 ---
