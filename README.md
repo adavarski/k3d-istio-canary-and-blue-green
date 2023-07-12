@@ -1,4 +1,4 @@
-## Create Canary and Blue/Green deployment of a demo application with Istio and Helm on k8s (k3d) (POC)
+## Create Canary and Blue/Green deployment of a demo application with Istio and Helm on k8s (k3d) 
 
 In this playground, we are going to review ways in which we can deploy two versions of our application in production-like environments in Kubernetes and apply two different availability approaches. The first is to distribute network traffic evenly between the two versions (canary) and the second is for 100% of the traffic to either one of them (blue/green) with zero downtime.
 
