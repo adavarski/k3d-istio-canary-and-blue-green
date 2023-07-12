@@ -276,14 +276,7 @@ $ curl 192.168.1.99:8080
 ---
 
 ### CONCLUSION
-In this playground, we discovered together how can we apply a hybrid solution between Canary and Blue/Green deployment with the help of Helm and Istio. 
+In this playground, we discovered how can we apply a hybrid solution between Canary and Blue/Green deployment with the help of Helm and Istio. 
 
-Here are some sources for further reading:
-
-Kubernetes Fundamentals on Strive 2 Code
-Canary Deployments on Octopus Deploy
-Istio Docs
-Blue/Green Deployments on O'Reilly
-Using Canary Release Pipelines to Achieve Continuous Testing on Sauce Labs
 
 
