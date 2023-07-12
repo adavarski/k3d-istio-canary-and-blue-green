@@ -250,7 +250,7 @@ If everything went good, you should be able to see in your kiali versioned graph
 
 <img src="screenshots/istio-kiali-demoapp-graph.png?raw=true" width="900">
 
-With Istio, we can do a lot of advanced configuration such as SSL mutual authentication between microservices and apply advanced routing policies with the help of DestinationRule.
+With Istio, we can do a lot of advanced configuration such as SSL mutual authentication (mTLS) between microservices and apply advanced routing policies with the help of DestinationRule.
 
 ```
 ### Access demoapp (app-gateway can be changed from Host * -> demoapp.192.168.1.99.nip.io)
