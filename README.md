@@ -35,7 +35,7 @@ Istio provides behavioral insights and operational control over the service mesh
 
 Now let us dive into the solution:
 
-If you want to follow along with this article, you will need to install all necessary resources:
+If you want to follow along with this playground, you will need to install all necessary resources:
 
 - k3d cluster
 - kubectl
@@ -248,11 +248,10 @@ Then open your browser and copy-paste the DNS name of the LB you are going to se
 
 If everything went good, you should be able to see in your kiali versioned graph the following:
 
-<img src="screenshots/screenshot.png?raw=true" width="900">
+<img src="screenshots/istio-kiali-demoapp-graph.png?raw=true" width="900">
 
 With Istio, we can do a lot of advanced configuration such as SSL mutual authentication between microservices and apply advanced routing policies with the help of DestinationRule.
 
-### TODO: FIX 
 ```
 kubectl get svc istio-ingressgateway -n istio-system
 export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}')
@@ -260,8 +259,19 @@ export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 echo "$GATEWAY_URL"
 curl -v $GATEWAY_URL (20 times for example)
+
+OR using host IP
+$ curl 192.168.1.99:8080
+demoapp v2!
+$ curl 192.168.1.99:8080
+demoapp v1!
+$ curl 192.168.1.99:8080
+demoapp v1!
+$ curl 192.168.1.99:8080
+demoapp v1!
+$ curl 192.168.1.99:8080
+
 ```
-<img src="screenshots/istio-kiali-helm.png?raw=true" width="900">
 
 ---
 
