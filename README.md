@@ -139,7 +139,7 @@ Pre: Create docker images
 ```
 cd demoapp
 docker build -t davarski/testing-app:v1 .
-Change index.html: v1 -> v2
+Change main.py: v1 -> v2
 docker build -t davarski/testing-app:v2 .
 docker push davarski/testing-app:v1
 docker push davarski/testing-app:v2
@@ -253,6 +253,7 @@ If everything went good, you should be able to see in your kiali versioned graph
 With Istio, we can do a lot of advanced configuration such as SSL mutual authentication between microservices and apply advanced routing policies with the help of DestinationRule.
 
 ```
+### Access demoapp (app-gateway can be changed from Host * -> demoapp.192.168.1.99.nip.io)
 kubectl get svc istio-ingressgateway -n istio-system
 export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}')
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
@@ -260,7 +261,7 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 echo "$GATEWAY_URL"
 curl -v $GATEWAY_URL (20 times for example)
 
-OR using host IP
+Using host IP
 $ curl 192.168.1.99:8080
 demoapp v2!
 $ curl 192.168.1.99:8080
@@ -271,7 +272,7 @@ $ curl 192.168.1.99:8080
 demoapp v1!
 $ curl 192.168.1.99:8080
 
-Note: upstream connect error or disconnect/reset before headers. reset reason: connection failure, transport failure reason: delayed connect error: 111 ---> switch pod listen address from 172.0.0.1 to 0.0.0.0
+Note (errors like this): "upstream connect error or disconnect/reset before headers. reset reason: connection failure, transport failure reason: delayed connect error: 111" ---> Fix: switch pod listen address from 172.0.0.1 to 0.0.0.0
 ```
 
 ---
