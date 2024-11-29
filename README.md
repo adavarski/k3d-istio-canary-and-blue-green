@@ -73,6 +73,7 @@ kubectl apply -f ./istio-${ISTIO_VERSION}/samples/addons/jaeger.yaml
 kubectl apply -f ./istio-${ISTIO_VERSION}/samples/addons/prometheus.yaml
 kubectl apply -f ./istio-${ISTIO_VERSION}/samples/addons/grafana.yaml
 
+### Note: IP = laptop IP
 kubectl apply -f ./ingresses/  -n istio-system
 ```
 
