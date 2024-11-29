@@ -263,6 +263,9 @@ echo "$GATEWAY_URL"
 curl -v $GATEWAY_URL (20 times for example)
 
 Using host IP
+
+for i in {1..2000};do curl 192.168.1.99:8080;done
+
 $ curl 192.168.1.99:8080
 demoapp v2!
 $ curl 192.168.1.99:8080
@@ -272,6 +275,8 @@ demoapp v1!
 $ curl 192.168.1.99:8080
 demoapp v1!
 $ curl 192.168.1.99:8080
+
+Note: View Kiali prod & stage ns selected, trafic, versioned graph
 
 Note (errors like this): "upstream connect error or disconnect/reset before headers. reset reason: connection failure, transport failure reason: delayed connect error: 111" ---> Fix: switch pod listen address from 172.0.0.1 to 0.0.0.0
 ```
